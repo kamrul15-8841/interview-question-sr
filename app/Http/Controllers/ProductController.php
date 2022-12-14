@@ -3,21 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
 use App\Models\Variant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Symfony\Component\Console\Input\Input;
+use PHPUnit\Util\Filter;
 class ProductController extends Controller
 {
+    protected $product, $products, $ProductVariantPrice, $variants, $last_id, $lid, $tdate, $dat, $title;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('products.index');
+
+        $this->variants =Variant::all('title');
+
+        //for pagination
+        $this->products = Product::paginate(2);
+
+        return view('products.index', [
+            'products' => $this->products,
+            'variants' => $this->variants,
+        ]);
     }
 
     /**
@@ -39,7 +52,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-
+        return $request->all();
+       return Product::createProduct($request);
+        return redirect()->back()->with('success', 'Product Created Successfully');
     }
 
 
@@ -51,7 +66,9 @@ class ProductController extends Controller
      */
     public function show($product)
     {
-
+        $product=Product::findOrFail($product);
+        return view('products.index')->with('product',$product);
+        dd($product);  // This will never be executed.
     }
 
     /**
@@ -63,7 +80,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $variants = Variant::all();
-        return view('products.edit', compact('variants'));
+        $this->product = Product::find($product);
+        return view('products.edit', compact('variants', 'product'));
     }
 
     /**
