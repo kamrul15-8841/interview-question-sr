@@ -28,13 +28,22 @@ class Product extends Model
 //    {
 //        return $this->hasMany(Variant::class);
 //    }
-    public static function createProduct($request)
+//    public static function createProduct($request)
+//    {
+//        self::$product = new Product();
+//        self::$product->title = $request->title;
+//        self::$product->sku = $request->sku;
+//        self::$product->description = $request->description;
+//        self::$product->save();
+//    }
+    public static function createOrUpdateProduct($request, $id = null)
     {
-        self::$product = new Product();
-        self::$product->title = $request->title;
-        self::$product->sku = $request->sku;
-        self::$product->description = $request->description;
-        self::$product->save();
+        Product::updateOrCreate(['id'=> $id], [
+            'title' => $request->title,
+            'sku' => $request->sku,
+            'description' => $request->description,
+
+        ]);
     }
 
 }

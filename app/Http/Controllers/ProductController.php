@@ -40,8 +40,13 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $this->products = Product::all();
         $variants = Variant::all();
-        return view('products.create', compact('variants'));
+//        return view('products.create', compact('variants'));
+        return view('products.create',[
+            'products' => $this->products,
+            'variants' => $this->variants,
+        ]);
     }
 
     /**
@@ -52,8 +57,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
-       return Product::createProduct($request);
+       Product::createOrUpdateProduct($request);
+//         ProductImage::createOrUpdateProductImage($request);
+//       return $request->all();
+//       return Product::createProduct($request);
         return redirect()->back()->with('success', 'Product Created Successfully');
     }
 
@@ -80,7 +87,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $variants = Variant::all();
-        $this->product = Product::find($product);
+       $this->product = Product::find($product);
         return view('products.edit', compact('variants', 'product'));
     }
 
@@ -93,7 +100,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $product = Product::findOrFail($product);
+        $product->fill($request->all());
+        $product->save();
+        return redirect()->back()->with('success', 'Variant Updated');
+//        Product::createOrUpdateProduct($request, $product);
+//        return redirect()->back()->with('success', 'Product Created Successfully');
     }
 
     /**
