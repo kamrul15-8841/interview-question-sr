@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <input type="date" name="date" placeholder="Date" value="{{ 'y/m/d' }}" class="form-control">
+                    <input type="date" name="date" placeholder="Date" value="{{ 'd/m/y' }}" class="form-control">
                 </div>
                 <div class="col-md-1">
                     <button type="submit" class="btn btn-primary float-right"><i class="fa fa-search"></i></button>

@@ -8,6 +8,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
 use App\Models\Variant;
 use Carbon\Carbon;
+use GuzzleHttp\Psr7\PumpStream;
 use Illuminate\Http\Request;
 use Symfony\Component\Console\Input\Input;
 use PHPUnit\Util\Filter;
@@ -19,8 +20,17 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
+
+
     public function index(Request $request)
     {
+       //filter
+       $tdate = Carbon::now()->format('d/m/y');
+      $this->products = Product::when($request->date != null, function ($q) use ($request){
+        return $q->whereDate('created_at',$request->date);
+       }, function($q) use ($tdate){
+        return $q->whereDate('created_at',$tdate);
+       })->paginate(2);
 
         $this->variants =Variant::all('title');
 
